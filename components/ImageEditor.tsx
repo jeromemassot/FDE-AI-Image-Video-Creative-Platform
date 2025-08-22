@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Tool, Annotation, Point, PencilAnnotation, LineAnnotation, RectangleAnnotation, TextAnnotation } from '../types';
 import Toolbox from './Toolbox';
@@ -19,6 +18,19 @@ import {
     handleTextInputKeyDown 
 } from '../lib/imageEditorUtils';
 
+const anglesOfView = [
+  { title: "Eye-Level", description: "This is the most common angle. You hold the camera at the same height as your subject's eyes. It creates a natural and direct connection, making the viewer feel like they are right there with the subject." },
+  { title: "High Angle", description: "The camera is positioned above the subject, looking down. This angle can make the subject seem smaller, younger, or more vulnerable. It's also great for showing the layout of a scene from above." },
+  { title: "Low Angle", description: "The camera is placed below the subject, looking up. This angle makes the subject look powerful, tall, and important. It can make buildings look massive or people seem heroic." },
+  { title: "Bird's-Eye View", description: "This is an extreme high angle, taken from directly overhead, as if you were a bird looking straight down. It’s great for showing patterns, shapes, and the relationship between objects on the ground." },
+  { title: "Worm's-Eye View", description: "This is an extreme low angle, taken from ground level (or even lower!) looking straight up. It creates a dramatic and often distorted perspective, making the world seem huge and overwhelming." },
+  { title: "Head-On Shot", description: "You face your subject directly, with the camera pointed straight at their front. This angle feels very direct, honest, and sometimes confrontational. It works well for portraits and showing symmetry." },
+  { title: "Profile Shot", description: "You position the camera directly to the side of your subject, capturing their silhouette or side view. This angle is great for highlighting a person's features or the shape of an object, creating a more pensive or observational mood." },
+  { title: "Over-the-Shoulder", description: "The photo is taken from behind a person, looking over their shoulder at the main subject. This draws the viewer into the scene, making them feel like they are part of a conversation or a participant in the action." },
+  { title: "Tilted Horizon (or Dutch Angle)", description: "The camera is physically tilted to one side, so the horizon line in the picture is slanted. This creates a sense of unease, motion, or excitement. It’s often used to make a scene feel more dynamic or confusing." },
+  { title: "Frame Within a Frame", description: "This is when you use an element in the scene—like a doorway, window, or archway—to create a natural frame around your main subject. This angle adds depth to the picture and helps to draw the viewer's eye exactly where you want it to go." }
+];
+
 interface ImageEditorProps {
   onPrepareForVideo: (dataUrl: string) => void;
   apiKey: string;
@@ -38,6 +50,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const [selectedAnnotationId, setSelectedAnnotationId] = useState<number | null>(null);
   const [action, setAction] = useState<'none' | 'drawing' | 'moving' | 'resizing' | 'rotating'>('none');
   const [showVideoPreparedMessage, setShowVideoPreparedMessage] = useState(false);
+  const [selectedAngle, setSelectedAngle] = useState('');
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,6 +59,11 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const isCancellingWithEscape = useRef(false);
   const dragStartPoint = useRef<Point | null>(null);
   const initialAnnotationState = useRef<Annotation | null>(null);
+
+  const handleGenerateImageWithAngle = () => {
+    const fullPrompt = selectedAngle ? `${selectedAngle}, ${generationPrompt}` : generationPrompt;
+    handleGenerateImage(apiKey, fullPrompt, setIsGeneratingImage, setGenerationError, setImage, setAnnotations, setTextInput, setSelectedAnnotationId);
+  };
 
   useEffect(() => {
     if (image) {
@@ -123,6 +141,22 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
         onImageUpload={(e) => handleImageUpload(e, setImage, setAnnotations, setGenerationPrompt, setGenerationError, setTextInput, setSelectedAnnotationId)}
         imageLoaded={!!image}
       />
+      <div className="bg-gray-800 border-y border-gray-700 -mx-6 px-6 py-2 flex items-center space-x-4">
+        <label htmlFor="angle-of-view" className="text-sm font-medium text-white">Angle of View:</label>
+        <select
+          id="angle-of-view"
+          value={selectedAngle}
+          onChange={(e) => setSelectedAngle(e.target.value)}
+          className="bg-gray-700 border border-gray-600 text-white rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">-- Select Angle --</option>
+          {anglesOfView.map(angle => (
+            <option key={angle.title} value={angle.title} title={angle.description}>
+              {angle.title}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="flex flex-grow min-h-0">
         <div ref={containerRef} className="flex-grow w-full h-full relative flex items-center justify-center">
             {!image ? (
@@ -162,7 +196,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
                             <p className="mt-2 text-sm text-red-500 text-left">{generationError}</p>
                         )}
                         <button 
-                            onClick={() => handleGenerateImage(apiKey, generationPrompt, setIsGeneratingImage, setGenerationError, setImage, setAnnotations, setTextInput, setSelectedAnnotationId)} 
+                            onClick={handleGenerateImageWithAngle} 
                             disabled={isGeneratingImage || !generationPrompt.trim()}
                             className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
@@ -243,7 +277,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
                 <p className="text-sm text-red-500 text-left">{generationError}</p>
             )}
             <button 
-                onClick={() => handleGenerateImage(apiKey, generationPrompt, setIsGeneratingImage, setGenerationError, setImage, setAnnotations, setTextInput, setSelectedAnnotationId)} 
+                onClick={handleGenerateImageWithAngle} 
                 disabled={isGeneratingImage || !generationPrompt.trim()}
                 className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
