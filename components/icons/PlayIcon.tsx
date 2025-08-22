@@ -1,0 +1,11 @@
+
+import React from 'react';
+
+const PlayIcon: React.FC = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="10 8 16 12 10 16 10 8" />
+    </svg>
+);
+
+export default PlayIcon;

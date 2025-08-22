@@ -1,0 +1,6 @@
+{
+  "name": "AI Video Scene Creator",
+  "description": "An application to annotate an image with sketches and text, then use it as a base for generating a video with an AI model.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
