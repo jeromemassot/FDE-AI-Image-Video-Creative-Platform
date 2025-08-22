@@ -109,7 +109,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
     'cursor-crosshair';
 
   return (
-    <div className="flex flex-col h-full bg-gray-900">
+    <div className="flex flex-col h-full bg-gray-900 p-6 space-y-6">
+      <h2 className="text-2xl font-bold text-white">Image Generation and Annotation</h2>
       <Toolbox 
         tool={tool} 
         setTool={setTool}
