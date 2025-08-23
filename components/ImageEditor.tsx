@@ -31,6 +31,14 @@ const anglesOfView = [
   { title: "Frame Within a Frame", description: "This is when you use an element in the scene—like a doorway, window, or archway—to create a natural frame around your main subject. This angle adds depth to the picture and helps to draw the viewer's eye exactly where you want it to go." }
 ];
 
+const lensTypes = [
+  { title: "Wide-Angle Lens (24mm)", description: "This lens captures a very broad field of view, making it perfect for sweeping landscapes, cityscapes, and architectural shots. It creates a sense of grand scale and depth. Be aware that it can cause **perspective distortion**, where objects near the edges of the frame appear stretched or curved, adding a dynamic and sometimes dramatic feel to the image." },
+  { title: "Telephoto Lens (200mm)", description: "A telephoto lens makes distant subjects appear much closer. Its signature effect is **perspective compression**, which makes the background seem closer to the subject than it is. This lens creates a very shallow depth of field, resulting in a sharp subject against a beautifully blurred background, an effect known as **bokeh**. It's ideal for portraits, wildlife, and sports photography." },
+  { title: "Macro Lens", description: "This lens is used for extreme close-up photography. It magnifies tiny subjects to reveal intricate, fascinating details that are not visible to the naked eye. The key visual trait is an **extremely shallow depth of field**, where only a tiny slice of the subject is in sharp focus, while the rest melts away into a soft blur. Use this for images of insects, flowers, water droplets, or textures." },
+  { title: "Fisheye Lens", description: "An extreme type of wide-angle lens that produces a strong visual distortion, creating a circular or hemispherical image. Straight lines in the scene, especially near the edges, will appear dramatically curved. This creates a surreal, immersive, and highly stylized **spherical perspective**, as if looking through a peephole or at a reflection in a crystal ball." },
+  { title: "Tilt-Shift Lens", description: "This specialized lens allows the artist to manipulate the plane of focus. The most popular creative use in image generation is to create the \"miniature faking\" or diorama effect. By selectively blurring the top and bottom of the frame, a life-sized scene (like a city street or a landscape) is made to look like a tiny, artificial model. It gives the image a whimsical, toy-like appearance." }
+];
+
 interface ImageEditorProps {
   onPrepareForVideo: (dataUrl: string) => void;
   apiKey: string;
@@ -51,6 +59,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const [action, setAction] = useState<'none' | 'drawing' | 'moving' | 'resizing' | 'rotating'>('none');
   const [showVideoPreparedMessage, setShowVideoPreparedMessage] = useState(false);
   const [selectedAngle, setSelectedAngle] = useState('');
+  const [selectedLens, setSelectedLens] = useState('');
+
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,8 +70,9 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const dragStartPoint = useRef<Point | null>(null);
   const initialAnnotationState = useRef<Annotation | null>(null);
 
-  const handleGenerateImageWithAngle = () => {
-    const fullPrompt = selectedAngle ? `${selectedAngle}, ${generationPrompt}` : generationPrompt;
+  const handleGenerateImageWithOptions = () => {
+    const options = [selectedAngle, selectedLens].filter(Boolean).join(', ');
+    const fullPrompt = options ? `${options}, ${generationPrompt}` : generationPrompt;
     handleGenerateImage(apiKey, fullPrompt, setIsGeneratingImage, setGenerationError, setImage, setAnnotations, setTextInput, setSelectedAnnotationId);
   };
 
@@ -156,6 +167,20 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
             </option>
           ))}
         </select>
+        <label htmlFor="lens-type" className="text-sm font-medium text-white">Lens Type:</label>
+        <select
+          id="lens-type"
+          value={selectedLens}
+          onChange={(e) => setSelectedLens(e.target.value)}
+          className="bg-gray-700 border border-gray-600 text-white rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">-- Select Lens --</option>
+          {lensTypes.map(lens => (
+            <option key={lens.title} value={lens.title} title={lens.description}>
+              {lens.title}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="flex flex-grow min-h-0">
         <div ref={containerRef} className="flex-grow w-full h-full relative flex items-center justify-center">
@@ -196,7 +221,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
                             <p className="mt-2 text-sm text-red-500 text-left">{generationError}</p>
                         )}
                         <button 
-                            onClick={handleGenerateImageWithAngle} 
+                            onClick={handleGenerateImageWithOptions} 
                             disabled={isGeneratingImage || !generationPrompt.trim()}
                             className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
@@ -277,7 +302,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
                 <p className="text-sm text-red-500 text-left">{generationError}</p>
             )}
             <button 
-                onClick={handleGenerateImageWithAngle} 
+                onClick={handleGenerateImageWithOptions} 
                 disabled={isGeneratingImage || !generationPrompt.trim()}
                 className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
