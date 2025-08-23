@@ -34,3 +34,21 @@ Description: The camera is physically tilted to one side, so the horizon line in
 10. Frame Within a Frame
 Description: This is when you use an element in the scene—like a doorway, window, or archway—to create a natural frame around your main subject. This angle adds depth to the picture and helps to draw the viewer's eye exactly where you want it to go.
 
+## Lenses Types
+
+Different angles of view a photographer can use, with simple names and descriptions.
+
+1. Wide-Angle Lens (24mm)
+Description of Effect: This lens captures a very broad field of view, making it perfect for sweeping landscapes, cityscapes, and architectural shots. It creates a sense of grand scale and depth. Be aware that it can cause **perspective distortion**, where objects near the edges of the frame appear stretched or curved, adding a dynamic and sometimes dramatic feel to the image.
+
+2. Telephoto Lens (200mm)
+Description of Effect: A telephoto lens makes distant subjects appear much closer. Its signature effect is **perspective compression**, which makes the background seem closer to the subject than it is. This lens creates a very shallow depth of field, resulting in a sharp subject against a beautifully blurred background, an effect known as **bokeh**. It's ideal for portraits, wildlife, and sports photography.
+
+3. Macro Lens
+Description of Effect: This lens is used for extreme close-up photography. It magnifies tiny subjects to reveal intricate, fascinating details that are not visible to the naked eye. The key visual trait is an **extremely shallow depth of field**, where only a tiny slice of the subject is in sharp focus, while the rest melts away into a soft blur. Use this for images of insects, flowers, water droplets, or textures.
+
+4. Fisheye Lens
+Description of Effect: An extreme type of wide-angle lens that produces a strong visual distortion, creating a circular or hemispherical image. Straight lines in the scene, especially near the edges, will appear dramatically curved. This creates a surreal, immersive, and highly stylized **spherical perspective**, as if looking through a peephole or at a reflection in a crystal ball.
+
+5. Tilt-Shift Lens
+Description of Effect: This specialized lens allows the artist to manipulate the plane of focus. The most popular creative use in image generation is to create the **"miniature faking" or diorama effect**. By selectively blurring the top and bottom of the frame, a life-sized scene (like a city street or a landscape) is made to look like a tiny, artificial model. It gives the image a whimsical, toy-like appearance.
