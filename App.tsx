@@ -6,7 +6,7 @@ import SettingsIcon from './components/icons/SettingsIcon';
 import SettingsModal from './components/SettingsModal';
 import { fetchApiKey } from './lib/api';
 import { handleSaveSettings } from './lib/settings';
-import logo from './assets/logos/logo.png';
+import logo from './assets/logos/logo-gc.png';
 
 const App: React.FC = () => {
   const [annotatedImageForVideo, setAnnotatedImageForVideo] = useState<string | null>(null);
