@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Tool, Annotation, Point, PencilAnnotation, LineAnnotation, RectangleAnnotation, TextAnnotation } from '../types';
 import Toolbox from './Toolbox';
 import UploadIcon from './icons/UploadIcon';
-import { handleGenerateImage } from '../lib/api';
+import { handleGenerateImage, updatePromptWithOptions } from '../lib/api';
 import { handleImageUpload } from '../lib/imageUtils';
 import { drawCanvas } from '../lib/canvasUtils';
 import { 
@@ -79,10 +79,40 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const dragStartPoint = useRef<Point | null>(null);
   const initialAnnotationState = useRef<Annotation | null>(null);
 
-  const handleGenerateImageWithOptions = () => {
-    const options = [selectedAngle, selectedLens, selectedPaperGrain].filter(Boolean).join(', ');
-    const fullPrompt = options ? `${options}, ${generationPrompt}` : generationPrompt;
-    handleGenerateImage(apiKey, fullPrompt, setIsGeneratingImage, setGenerationError, setImage, setAnnotations, setTextInput, setSelectedAnnotationId);
+  const handleGenerateImageWithOptions = async () => {
+    setIsGeneratingImage(true);
+    setGenerationError(null);
+
+    try {
+      // First, get the potentially updated prompt.
+      const finalPrompt = await updatePromptWithOptions(
+        apiKey, 
+        generationPrompt, 
+        selectedAngle, 
+        selectedLens, 
+        selectedPaperGrain
+      );
+
+      // Optional: update the UI with the new prompt so the user sees what was used.
+      setGenerationPrompt(finalPrompt);
+
+      // Then, generate the image with the final prompt.
+      // handleGenerateImage will manage the isGeneratingImage state from here.
+      await handleGenerateImage(
+        apiKey, 
+        finalPrompt, 
+        setIsGeneratingImage, 
+        setGenerationError, 
+        setImage, 
+        setAnnotations, 
+        setTextInput, 
+        setSelectedAnnotationId
+      );
+    } catch (error) {
+      console.error("Error in generation process:", error);
+      setGenerationError("An error occurred while generating the image.");
+      setIsGeneratingImage(false); // Ensure we stop loading on error.
+    }
   };
 
   useEffect(() => {
