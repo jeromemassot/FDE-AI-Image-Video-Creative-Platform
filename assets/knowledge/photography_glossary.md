@@ -52,3 +52,26 @@ Description of Effect: An extreme type of wide-angle lens that produces a strong
 
 5. Tilt-Shift Lens
 Description of Effect: This specialized lens allows the artist to manipulate the plane of focus. The most popular creative use in image generation is to create the **"miniature faking" or diorama effect**. By selectively blurring the top and bottom of the frame, a life-sized scene (like a city street or a landscape) is made to look like a tiny, artificial model. It gives the image a whimsical, toy-like appearance.
+
+## Paper grain
+
+1. Fine Grain
+Short Name: Fine Grain
+Description of Effect: This adds a very subtle, almost imperceptible texture to the image. It mimics high-quality, professional film, resulting in a very clean, sharp, and smooth picture. Use this prompt when you want just a hint of analog character and authenticity without sacrificing any fine detail.
+
+2. Medium Grain
+Short Name: Medium Grain
+Description of Effect: This is the classic "film look" that most people think of. The grain is clearly visible but not distracting, adding a pleasant texture that breaks up the digital perfection of the image. It evokes a feeling of nostalgia and authenticity, and it's a versatile choice for portraits, street photography, and everyday scenes.
+
+3. Heavy / Coarse Grain
+Short Name: Coarse Grain
+Description of Effect: This creates a very prominent, gritty, and sandy texture across the entire image. Fine details are softened and sometimes obscured by the strong grain pattern. This effect adds a raw, moody, and atmospheric quality, perfect for emulating low-light photography, vintage photojournalism, or creating edgy and emotional artistic images.
+
+4. Matte Paper Texture
+Short Name: Matte Paper Texture
+Description of Effect: This prompt simulates the physical surface of the paper rather than the film. A matte finish is non-reflective and has a soft, sometimes slightly fibrous appearance. This texture tends to lift the black levels, reducing deep contrast and giving the image a gentle, artistic, and sometimes painterly feel.
+
+5. Silver Gelatin Print
+Short Name: Silver Halide
+Description of Effect: Evoking the classic black-and-white darkroom printing process, this prompt creates an image with rich tonal depth and a characteristic grain structure. It's especially effective for monochrome images, lending them a timeless, archival quality with deep blacks, crisp whites, and a beautiful, natural-looking grain pattern.
+
