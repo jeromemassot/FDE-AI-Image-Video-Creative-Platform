@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Video } from '@google/genai';
 
 export const fetchApiKey = async (setApiKey: (key: string) => void) => {
@@ -90,7 +89,11 @@ export const handleGenerateVideo = async (
     let imagePart;
     let fullPrompt;
 
-    const systemPrompt = "Look at the entire image and capture the global scene, characters, objects, situation. \n  Create a video following the annotations on the image, respect carefully these annotations, in particular the direction of arrays if present. \n  But also respect the original content, and use the original content to create a realistic scene. \n  Remove the annotations from the generated video. The created video should mask any annotations (white and colored text, white and colored lines, white and colored arrows). \n  The annotations are seen at the first frame and removed on all the following frames of the video.";
+    const systemPrompt = `Look at the entire image and capture the global scene, characters, objects, situation.
+  Create a video following the annotations on the image, respect carefully these annotations, in particular the direction of arrays if present.
+  But also respect the original content, and use the original content to create a realistic scene.
+  Remove the annotations from the generated video. The created video should mask any annotations (white and colored text, white and colored lines, white and colored arrows).
+  The annotations are seen at the first frame and removed on all the following frames of the video.`;
 
     if (baseImage) {
       imagePart = {
@@ -119,4 +122,68 @@ export const handleGenerateVideo = async (
 
     setVideo(operation.response?.generatedVideos?.[0].video);
     console.log(`Generated video retrieved`);
+  };
+
+  export const updatePromptWithOptions = async (
+    apiKey: string,
+    originalPrompt: string,
+    selectedAngle: string,
+    selectedLens: string,
+    selectedPaperGrain: string
+  ): Promise<string> => {
+    // if no options selected, return original prompt
+    if (!selectedAngle && !selectedLens && !selectedPaperGrain) {
+      return originalPrompt;
+    }
+  
+    try {
+      const ai = new GoogleGenAI({
+        vertexai: false,
+        apiKey: apiKey
+      });
+  
+      const systemPrompt = `You are an expert in image generation prompts. Your task is to update a user's prompt with the specified photographic effects.
+  - The user will provide an original prompt and a set of effects (Angle of View, Lens Type, Paper Grain).
+  - If an effect has a value of 'None' or is an empty string, you must ignore it.
+  - You must integrate the selected effects naturally into the original prompt. Do not just list them.
+  - The output must be ONLY the new, updated prompt string. Do not add any other text, labels, or explanations.
+  
+  Example:
+  Original prompt: "A knight in shining armor"
+  Angle of View: "Low Angle"
+  Lens Type: "None"
+  Paper Grain: "Fine Grain"
+  Output: "A low-angle shot of a knight in shining armor, with a fine grain texture."
+  `;
+  
+      const userMessage = `
+        Original prompt: "${originalPrompt}"
+        Angle of View: ${selectedAngle || 'None'}
+        Lens Type: ${selectedLens || 'None'}
+        Paper Grain: ${selectedPaperGrain || 'None'}
+      `;
+  
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash", 
+        contents: [systemPrompt, userMessage]
+      });
+      const newPrompt = response.text;
+      
+      console.log(`Original prompt: ${originalPrompt}`);
+      console.log(`Updated prompt: ${newPrompt}`);
+  
+      // Basic validation to ensure the model didn't return something weird
+      if (newPrompt && newPrompt.length > 10) {
+          return newPrompt;
+      }
+      // Fallback if the model returns empty or very short string
+      const options = [selectedAngle, selectedLens, selectedPaperGrain].filter(Boolean).join(', ');
+      return options ? `${options}, ${originalPrompt}` : originalPrompt;
+  
+    } catch (error) {
+      console.error("Error updating prompt:", error);
+      // Fallback to simple concatenation on error
+      const options = [selectedAngle, selectedLens, selectedPaperGrain].filter(Boolean).join(', ');
+      return options ? `${options}, ${originalPrompt}` : originalPrompt;
+    }
   };
