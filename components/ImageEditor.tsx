@@ -346,17 +346,17 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
               <div className="flex flex-col">
                 <h3 className="text-lg font-medium text-white">Generate Video</h3>
                 <p className="text-sm text-gray-400 mt-1">Send the final annotated image to the video generation panel.</p>
-                <div className="flex-grow flex items-center mt-4">
+                <div className="flex-grow flex flex-col justify-end mt-4">
                   <button 
                       onClick={() => handlePrepareForVideo(canvasRef, onPrepareForVideo, setShowVideoPreparedMessage)} 
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2"
                   >
                       Prepare for Video
                   </button>
+                  {showVideoPreparedMessage && (
+                      <p className="mt-2 text-sm text-green-400 text-center">Image sent to video panel!</p>
+                  )}
                 </div>
-                {showVideoPreparedMessage && (
-                    <p className="mt-2 text-sm text-green-400 text-center">Image sent to video panel!</p>
-                )}
               </div>
             </div>
           </div>
