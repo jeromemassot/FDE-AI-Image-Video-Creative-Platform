@@ -21,7 +21,7 @@ const App: React.FC = () => {
     <div className="h-screen w-screen bg-gray-900 text-white flex flex-col font-sans overflow-hidden">
       <header className="flex-shrink-0 bg-gray-800 border-b border-gray-700 px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="App Logo" className="h-10 w-30" />
+          <img src={logo} alt="App Logo" className="h-7 w-21" />
           <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator</h1>
         </div>
         <button onClick={() => setIsSettingsOpen(true)} className="text-gray-400 hover:text-white">
