@@ -311,8 +311,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
 
         {image && (
           <div className="flex-shrink-0 bg-gray-800 border-t border-gray-700 p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
+              <div className="md:col-span-2">
                 <h3 className="text-lg font-medium text-white">Regenerate Image</h3>
                 <p className="text-sm text-gray-400 mt-1">Modify your prompt to create a new version of the image.</p>
                 <textarea 
