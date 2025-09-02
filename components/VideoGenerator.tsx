@@ -63,7 +63,7 @@ const VideoGenerator: React.FC<VideoGeneratorProps> = ({ baseImage, apiKey }) =>
         <button
           onClick={() => handleGenerateVideo(baseImage, prompt, apiKey, selectedModel, setIsGeneratingVideo, setVideo)}
           disabled={(!baseImage && !prompt.trim()) || isGeneratingVideo}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isGeneratingVideo ? (
             <>
