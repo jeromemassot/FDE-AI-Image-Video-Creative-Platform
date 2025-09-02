@@ -207,8 +207,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
           ))}
         </select>
       </div>
-      <div className="flex flex-grow min-h-0">
-        <div ref={containerRef} className="flex-grow w-full h-full relative flex items-center justify-center">
+      <div className="flex flex-col flex-grow min-h-0">
+        <div ref={containerRef} className="flex-grow w-full relative flex items-center justify-center">
             {!image ? (
                 <div className="text-center text-gray-400 max-w-2xl w-full p-4">
                     <div className="p-6 border border-gray-700 rounded-lg bg-gray-800/50 mb-6">
@@ -310,51 +310,56 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
         </div>
 
         {image && (
-          <aside className="w-80 flex-shrink-0 bg-gray-800 border-l border-gray-700 p-6 flex flex-col space-y-4 overflow-y-auto">
-            <h3 className="text-lg font-medium text-white">Regenerate Image</h3>
-            <p className="text-sm text-gray-400">Modify your prompt to create a new version of the image.</p>
-            <textarea 
-                value={generationPrompt}
-                onChange={e => {
-                  setGenerationPrompt(e.target.value)
-                  setGenerationError(null);
-                }}
-                placeholder="e.g., A robot holding a red skateboard."
-                className="w-full bg-gray-700 border border-gray-600 text-white rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 resize-y min-h-[120px]"
-                disabled={isGeneratingImage}
-            />
-            {generationError && (
-                <p className="text-sm text-red-500 text-left">{generationError}</p>
-            )}
-            <button 
-                onClick={handleGenerateImageWithOptions} 
-                disabled={isGeneratingImage || !generationPrompt.trim()}
-                className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-                {isGeneratingImage ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                    'Regenerate Image'
+          <div className="flex-shrink-0 bg-gray-800 border-t border-gray-700 p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-white">Regenerate Image</h3>
+                <p className="text-sm text-gray-400 mt-1">Modify your prompt to create a new version of the image.</p>
+                <textarea 
+                    value={generationPrompt}
+                    onChange={e => {
+                      setGenerationPrompt(e.target.value)
+                      setGenerationError(null);
+                    }}
+                    placeholder="e.g., A robot holding a red skateboard."
+                    className="w-full bg-gray-700 border border-gray-600 text-white rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 resize-y min-h-[120px] mt-4"
+                    disabled={isGeneratingImage}
+                />
+                {generationError && (
+                    <p className="text-sm text-red-500 text-left mt-2">{generationError}</p>
                 )}
-            </button>
-
-            <div className="border-t border-gray-600 my-4" />
-
-            <h3 className="text-lg font-medium text-white">Generate Video</h3>
-            <p className="text-sm text-gray-400">Send the final annotated image to the video generation panel.</p>
-            <button 
-                onClick={() => handlePrepareForVideo(canvasRef, onPrepareForVideo, setShowVideoPreparedMessage)} 
-                className="mt-2 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2"
-            >
-                Prepare for Video
-            </button>
-            {showVideoPreparedMessage && (
-                <p className="mt-2 text-sm text-green-400 text-center">Image sent to video panel!</p>
-            )}
-          </aside>
+                <button 
+                    onClick={handleGenerateImageWithOptions} 
+                    disabled={isGeneratingImage || !generationPrompt.trim()}
+                    className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                    {isGeneratingImage ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Generating...</span>
+                      </>
+                    ) : (
+                        'Regenerate Image'
+                    )}
+                </button>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-lg font-medium text-white">Generate Video</h3>
+                <p className="text-sm text-gray-400 mt-1">Send the final annotated image to the video generation panel.</p>
+                <div className="flex-grow flex items-center mt-4">
+                  <button 
+                      onClick={() => handlePrepareForVideo(canvasRef, onPrepareForVideo, setShowVideoPreparedMessage)} 
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition-colors flex items-center justify-center gap-2"
+                  >
+                      Prepare for Video
+                  </button>
+                </div>
+                {showVideoPreparedMessage && (
+                    <p className="mt-2 text-sm text-green-400 text-center">Image sent to video panel!</p>
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
