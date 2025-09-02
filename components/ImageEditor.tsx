@@ -207,7 +207,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
           ))}
         </select>
       </div>
-      <div className="flex flex-col flex-grow min-h-0">
+      <div className="flex flex-col flex-grow min-h-0 space-y-6">
         <div ref={containerRef} className="flex-grow w-full relative flex items-center justify-center">
             {!image ? (
                 <div className="text-center text-gray-400 max-w-2xl w-full p-4">
