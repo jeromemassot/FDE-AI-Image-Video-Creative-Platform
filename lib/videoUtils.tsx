@@ -5,11 +5,11 @@ import { Video } from "@google/genai";
 export const renderContent = (generatedVideo: Video | null | undefined, apiKey: string) => {
     if (generatedVideo) {
       return (
-        <div className="w-[80%] h-[80%] flex items-center justify-center bg-black rounded-lg">
+        <div className="w-full h-full flex items-center justify-center bg-black rounded-lg">
             <video 
                 src={`${generatedVideo.uri}&key=${apiKey}`}
                 controls 
-                className="max-w-[80%] max-h-[80%] rounded-md object-contain"
+                className="max-w-full max-h-full rounded-md object-contain"
             >
               Your browser does not support the video tag.
             </video>
