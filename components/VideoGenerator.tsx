@@ -54,7 +54,7 @@ const VideoGenerator: React.FC<VideoGeneratorProps> = ({ baseImage, apiKey }) =>
           />
         </div>
 
-        <div className="flex-grow flex items-center justify-center bg-gray-900 rounded-lg min-h-[200px]">
+        <div className="flex-grow flex items-center justify-center bg-gray-900 rounded-lg h-full">
           {renderContent(generatedVideo, apiKey)}
         </div>
       </div>
