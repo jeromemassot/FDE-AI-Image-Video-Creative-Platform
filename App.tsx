@@ -7,11 +7,14 @@ import SettingsModal from './components/SettingsModal';
 import { fetchApiKey } from './lib/api';
 import { handleSaveSettings } from './lib/settings';
 import logo from './assets/logos/logo-gc.png';
+import ChecklistIcon from './components/icons/ChecklistIcon';
+import ChecklistSidebar from './components/ChecklistSidebar';
 
 const App: React.FC = () => {
   const [annotatedImageForVideo, setAnnotatedImageForVideo] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isChecklistOpen, setIsChecklistOpen] = useState(true);
 
   useEffect(() => {
     fetchApiKey(setApiKey);
@@ -24,15 +27,23 @@ const App: React.FC = () => {
           <img src={logo} alt="App Logo" className="h-7 w-21" />
           <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator</h1>
         </div>
-        <button onClick={() => setIsSettingsOpen(true)} className="text-gray-400 hover:text-white">
-          <SettingsIcon />
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={() => setIsChecklistOpen(!isChecklistOpen)} className="text-gray-400 hover:text-white">
+            <ChecklistIcon />
+          </button>
+          <button onClick={() => setIsSettingsOpen(true)} className="text-gray-400 hover:text-white">
+            <SettingsIcon />
+          </button>
+        </div>
       </header>
-      <main className="flex-grow min-h-0">
-        <ResizablePanels
-          leftPanel={<ImageEditor onPrepareForVideo={setAnnotatedImageForVideo} apiKey={apiKey} />}
-          rightPanel={<VideoGenerator baseImage={annotatedImageForVideo} apiKey={apiKey} />}
-        />
+      <main className="flex-grow min-h-0 flex">
+        <div className={`flex-grow h-full transition-all duration-300 ${isChecklistOpen ? 'w-[calc(100%-24rem)]' : 'w-full'}`}>
+            <ResizablePanels
+              leftPanel={<ImageEditor onPrepareForVideo={setAnnotatedImageForVideo} apiKey={apiKey} />}
+              rightPanel={<VideoGenerator baseImage={annotatedImageForVideo} apiKey={apiKey} />}
+            />
+        </div>
+        <ChecklistSidebar isOpen={isChecklistOpen} />
       </main>
       <SettingsModal
         isOpen={isSettingsOpen}
