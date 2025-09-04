@@ -45,3 +45,9 @@ export interface TextAnnotation extends BaseAnnotation {
 }
 
 export type Annotation = PencilAnnotation | LineAnnotation | RectangleAnnotation | TextAnnotation;
+
+export interface ChecklistItem {
+  name: string;
+  description: string;
+  completed: boolean;
+}
