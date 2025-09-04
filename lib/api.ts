@@ -187,3 +187,52 @@ export const handleGenerateVideo = async (
       return options ? `${options}, ${originalPrompt}` : originalPrompt;
     }
   };
+
+export const describeImage = async (
+  apiKey: string,
+  image: string,
+  setIsDescribingImage: (isDescribing: boolean) => void,
+  setDescriptionError: (error: string | null) => void,
+  setGenerationPrompt: (prompt: string) => void
+) => {
+  if (!image) {
+    setDescriptionError("No image provided to describe.");
+    return;
+  }
+
+  setIsDescribingImage(true);
+  setDescriptionError(null);
+
+  try {
+    const ai = new GoogleGenAI({
+      vertexai: false,
+      apiKey: apiKey,
+    });
+
+    const systemPrompt = `Describe the following image in extreme detail. 
+    Your description will be used as a prompt for a text-to-image generation model to recreate the image. 
+    Capture every element, the style, the colors, the composition, the lighting, and the overall mood. 
+    Be as descriptive and thorough as possible.`;
+
+    const imagePart = {
+      data: image.split(',')[1],
+      mimeType: image.split(';')[0].split(':')[1],
+    };
+
+    console.log(imagePart)
+
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [systemPrompt, { inlineData: imagePart }]
+    });
+
+    const description = response.text;
+    setGenerationPrompt(description);
+
+  } catch (error) {
+    console.error("Error describing image:", error);
+    setDescriptionError("Failed to describe the image. Please try again.");
+  } finally {
+    setIsDescribingImage(false);
+  }
+};
