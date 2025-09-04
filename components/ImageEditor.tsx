@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Tool, Annotation, Point, PencilAnnotation, LineAnnotation, RectangleAnnotation, TextAnnotation } from '../types';
+import { Tool, Annotation, Point } from '../types';
 import Toolbox from './Toolbox';
 import UploadIcon from './icons/UploadIcon';
-import { handleGenerateImage, updatePromptWithOptions } from '../lib/api';
-import { handleImageUpload } from '../lib/imageUtils';
+import { describeImage, handleGenerateImage, updatePromptWithOptions } from '../lib/api';
 import { drawCanvas } from '../lib/canvasUtils';
 import { 
     commitAndClearTextInput, 
@@ -34,6 +33,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const [generationPrompt, setGenerationPrompt] = useState('');
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const [isDescribingImage, setIsDescribingImage] = useState(false);
+  const [descriptionError, setDescriptionError] = useState<string | null>(null);
   const [textInput, setTextInput] = useState<{ position: Point; value: string } | null>(null);
   const [selectedAnnotationId, setSelectedAnnotationId] = useState<number | null>(null);
   const [action, setAction] = useState<'none' | 'drawing' | 'moving' | 'resizing' | 'rotating'>('none');
@@ -50,6 +51,35 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const isCancellingWithEscape = useRef(false);
   const dragStartPoint = useRef<Point | null>(null);
   const initialAnnotationState = useRef<Annotation | null>(null);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (loadEvent) => {
+            const dataUrl = loadEvent.target?.result as string;
+            setImage(dataUrl);
+            setAnnotations([]);
+            setTextInput(null);
+            setSelectedAnnotationId(null);
+            setGenerationError(null);
+            setDescriptionError(null);
+            setGenerationPrompt(''); // Clear old prompt
+            
+            describeImage(
+                apiKey,
+                dataUrl,
+                setIsDescribingImage,
+                setDescriptionError,
+                setGenerationPrompt
+            );
+        };
+        reader.onerror = () => {
+            setGenerationError("Failed to read the uploaded file.");
+        };
+        reader.readAsDataURL(file);
+    }
+  };
 
   const handleGenerateImageWithOptions = async () => {
     setIsGeneratingImage(true);
@@ -160,7 +190,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
         setLineWidth={setLineWidth}
         onClear={() => handleClear(setImage, setAnnotations, setGenerationError, setTextInput, setSelectedAnnotationId)}
         onUndo={() => handleUndo(selectedAnnotationId, setSelectedAnnotationId, setAnnotations)}
-        onImageUpload={(e) => handleImageUpload(e, setImage, setAnnotations, setGenerationPrompt, setGenerationError, setTextInput, setSelectedAnnotationId)}
+        onImageUpload={handleFileUpload}
         imageLoaded={!!image}
       />
       <div className="bg-gray-800 border-y border-gray-700 -mx-6 px-6 py-2 flex items-center space-x-4">
@@ -320,17 +350,27 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
                     onChange={e => {
                       setGenerationPrompt(e.target.value)
                       setGenerationError(null);
+                      setDescriptionError(null);
                     }}
-                    placeholder="e.g., A robot holding a red skateboard."
+                    placeholder={isDescribingImage ? "Generating description from image..." : "e.g., A robot holding a red skateboard."}
                     className="w-full bg-gray-700 border border-gray-600 text-white rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 resize-y min-h-[120px] mt-4"
-                    disabled={isGeneratingImage}
+                    disabled={isGeneratingImage || isDescribingImage}
                 />
+                {isDescribingImage && (
+                    <div className="flex items-center gap-2 mt-2 text-sm text-blue-400">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                        <span>Analyzing image to generate prompt...</span>
+                    </div>
+                )}
+                {descriptionError && (
+                    <p className="text-sm text-red-500 text-left mt-2">{descriptionError}</p>
+                )}
                 {generationError && (
                     <p className="text-sm text-red-500 text-left mt-2">{generationError}</p>
                 )}
                 <button 
                     onClick={handleGenerateImageWithOptions} 
-                    disabled={isGeneratingImage || !generationPrompt.trim()}
+                    disabled={isGeneratingImage || isDescribingImage || !generationPrompt.trim()}
                     className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {isGeneratingImage ? (
