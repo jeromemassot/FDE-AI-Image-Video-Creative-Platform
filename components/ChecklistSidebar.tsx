@@ -103,10 +103,10 @@ const ChecklistSidebar: React.FC<ChecklistSidebarProps> = ({ isOpen }) => {
                 className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-gray-700"
               />
               <div className="ml-3 text-sm">
-                <label htmlFor={`checklist-item-${index}`} className={`font-medium ${item.completed ? 'line-through text-gray-500' : 'text-white'}`}>
+                <label htmlFor={`checklist-item-${index}`} className={`font-medium text-justify ${item.completed ? 'line-through text-gray-500' : 'text-white'}`}>
                   {item.name}
                 </label>
-                <p className="text-gray-400 mt-1">{item.description}</p>
+                <p className="text-gray-400 mt-1 text-justify">{item.description}</p>
               </div>
             </div>
           </div>
