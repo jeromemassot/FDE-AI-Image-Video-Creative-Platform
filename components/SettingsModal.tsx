@@ -6,10 +6,12 @@ interface SettingsModalProps {
   onClose: () => void;
   apiKey: string;
   setApiKey: (apiKey: string) => void;
+  sessionDirectory: FileSystemDirectoryHandle | null;
+  setSessionDirectory: (directory: FileSystemDirectoryHandle) => void;
   onSave: () => void;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, apiKey, setApiKey, onSave }) => {
+const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, apiKey, setApiKey, sessionDirectory, setSessionDirectory, onSave }) => {
   if (!isOpen) {
     return null;
   }
@@ -29,6 +31,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, apiKey, 
             onChange={(e) => setApiKey(e.target.value)}
             className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">
+            Session Folder
+          </label>
+          <button
+            onClick={async () => {
+              try {
+                const handle = await window.showDirectoryPicker();
+                setSessionDirectory(handle);
+              } catch (error) {
+                console.error('Error selecting directory:', error);
+              }
+            }}
+            className="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-bold py-2 px-4 rounded-md"
+          >
+            {sessionDirectory ? `Selected: ${sessionDirectory.name}` : 'Select Directory'}
+          </button>
         </div>
         <div className="flex justify-end">
           <button

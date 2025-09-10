@@ -16,14 +16,17 @@ import {
     handleTextAreaBlur, 
     handleTextInputKeyDown 
 } from '../lib/imageEditorUtils';
+import { savePromptToFile, saveImageUploadToFile } from '../lib/session';
 import { anglesOfView, lensTypes, paperGrains } from '../lib/definitions';
 
 interface ImageEditorProps {
   onPrepareForVideo: (dataUrl: string) => void;
   apiKey: string;
+  sessionDirectory: FileSystemDirectoryHandle | null;
+  sessionId: string;
 }
 
-const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) => {
+const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey, sessionDirectory, sessionId}) => {
   const [image, setImage] = useState<string | null>(null);
   const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
   const [tool, setTool] = useState<Tool>(Tool.PENCIL);
@@ -52,11 +55,11 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
   const dragStartPoint = useRef<Point | null>(null);
   const initialAnnotationState = useRef<Annotation | null>(null);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = (loadEvent) => {
+        reader.onload = async (loadEvent) => {
             const dataUrl = loadEvent.target?.result as string;
             setImage(dataUrl);
             setAnnotations([]);
@@ -66,13 +69,14 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
             setDescriptionError(null);
             setGenerationPrompt(''); // Clear old prompt
             
-            describeImage(
+            const description = await describeImage(
                 apiKey,
                 dataUrl,
                 setIsDescribingImage,
-                setDescriptionError,
-                setGenerationPrompt
+                setDescriptionError
             );
+            setGenerationPrompt(description);
+            await saveImageUploadToFile(sessionDirectory, sessionId, file.name, description);
         };
         reader.onerror = () => {
             setGenerationError("Failed to read the uploaded file.");
@@ -97,6 +101,8 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey}) =>
 
       // Optional: update the UI with the new prompt so the user sees what was used.
       setGenerationPrompt(finalPrompt);
+
+      await savePromptToFile(sessionDirectory, sessionId, finalPrompt, 'image');
 
       // Then, generate the image with the final prompt.
       // handleGenerateImage will manage the isGeneratingImage state from here.

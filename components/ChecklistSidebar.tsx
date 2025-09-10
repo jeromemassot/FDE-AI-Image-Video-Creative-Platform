@@ -8,7 +8,7 @@ interface ChecklistSidebarProps {
 // Use import.meta.glob to import all markdown files from the checklists directory.
 // The `eager: true` option makes sure the content is imported synchronously.
 // The `as: 'raw'` option imports the files as raw text.
-const checklistModules = import.meta.glob('../assets/checklists/*.md', { eager: true, as: 'raw' });
+const checklistModules = import.meta.glob('../assets/checklists/*.md', { query: '?raw', import: 'default', eager: true });
 
 // Extract the file names to be used as checklist identifiers.
 const availableChecklists = Object.keys(checklistModules).map(path => {

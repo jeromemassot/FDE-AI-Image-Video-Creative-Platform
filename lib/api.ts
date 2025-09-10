@@ -192,9 +192,8 @@ export const describeImage = async (
   apiKey: string,
   image: string,
   setIsDescribingImage: (isDescribing: boolean) => void,
-  setDescriptionError: (error: string | null) => void,
-  setGenerationPrompt: (prompt: string) => void
-) => {
+  setDescriptionError: (error: string | null) => void
+): Promise<string> => {
   if (!image) {
     setDescriptionError("No image provided to describe.");
     return;
@@ -227,11 +226,12 @@ export const describeImage = async (
     });
 
     const description = response.text;
-    setGenerationPrompt(description);
+    return description;
 
   } catch (error) {
     console.error("Error describing image:", error);
     setDescriptionError("Failed to describe the image. Please try again.");
+    return '';
   } finally {
     setIsDescribingImage(false);
   }

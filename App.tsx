@@ -4,20 +4,23 @@ import ImageEditor from './components/ImageEditor';
 import VideoGenerator from './components/VideoGenerator';
 import SettingsIcon from './components/icons/SettingsIcon';
 import SettingsModal from './components/SettingsModal';
-import { fetchApiKey } from './lib/api';
-import { handleSaveSettings } from './lib/settings';
+import { saveSettings, loadSettings } from './lib/settings';
 import logo from './assets/logos/logo-gc.png';
 import ChecklistIcon from './components/icons/ChecklistIcon';
 import ChecklistSidebar from './components/ChecklistSidebar';
+import PlusIcon from './components/icons/PlusIcon';
 
 const App: React.FC = () => {
   const [annotatedImageForVideo, setAnnotatedImageForVideo] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState('');
+  const [sessionDirectory, setSessionDirectory] = useState<FileSystemDirectoryHandle | null>(null);
+  const [sessionId, setSessionId] = useState<string>('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isChecklistOpen, setIsChecklistOpen] = useState(true);
 
   useEffect(() => {
-    fetchApiKey(setApiKey);
+    loadSettings(setApiKey, setSessionDirectory);
+    setSessionId(Date.now().toString());
   }, []);
 
   return (
@@ -28,6 +31,10 @@ const App: React.FC = () => {
           <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator</h1>
         </div>
         <div className="flex items-center gap-4">
+          <button onClick={() => setSessionId(Date.now().toString())}
+            className="text-gray-400 hover:text-white">
+            <PlusIcon />
+          </button>
           <button onClick={() => setIsChecklistOpen(!isChecklistOpen)} className="text-gray-400 hover:text-white">
             <ChecklistIcon />
           </button>
@@ -39,8 +46,8 @@ const App: React.FC = () => {
       <main className="flex-grow min-h-0 flex">
         <div className={`flex-grow h-full transition-all duration-300 ${isChecklistOpen ? 'w-[calc(100%-24rem)]' : 'w-full'}`}>
             <ResizablePanels
-              leftPanel={<ImageEditor onPrepareForVideo={setAnnotatedImageForVideo} apiKey={apiKey} />}
-              rightPanel={<VideoGenerator baseImage={annotatedImageForVideo} apiKey={apiKey} />}
+              leftPanel={<ImageEditor onPrepareForVideo={setAnnotatedImageForVideo} apiKey={apiKey} sessionDirectory={sessionDirectory} sessionId={sessionId} />}
+              rightPanel={<VideoGenerator baseImage={annotatedImageForVideo} apiKey={apiKey} sessionDirectory={sessionDirectory} sessionId={sessionId} />}
             />
         </div>
         <ChecklistSidebar isOpen={isChecklistOpen} />
@@ -50,7 +57,9 @@ const App: React.FC = () => {
         onClose={() => setIsSettingsOpen(false)}
         apiKey={apiKey}
         setApiKey={setApiKey}
-        onSave={() => handleSaveSettings(apiKey, setIsSettingsOpen)}
+        sessionDirectory={sessionDirectory}
+        setSessionDirectory={setSessionDirectory}
+        onSave={() => saveSettings(apiKey, sessionDirectory, setIsSettingsOpen)}
       />
     </div>
   );

@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Video } from "@google/genai";
 import { handleGenerateVideo } from '../lib/api';
+import { savePromptToFile } from '../lib/session';
 import { renderContent } from '../lib/videoUtils.tsx';
 
 interface VideoGeneratorProps {
   baseImage: string | null;
   apiKey: string;
+  sessionDirectory: FileSystemDirectoryHandle | null;
+  sessionId: string;
 }
 
-const VideoGenerator: React.FC<VideoGeneratorProps> = ({ baseImage, apiKey }) => {
+const VideoGenerator: React.FC<VideoGeneratorProps> = ({ baseImage, apiKey, sessionDirectory, sessionId }) => {
   const [prompt, setPrompt] = useState('');
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const [generatedVideo, setVideo] = useState<Video | null | undefined>(null);
@@ -61,7 +64,10 @@ const VideoGenerator: React.FC<VideoGeneratorProps> = ({ baseImage, apiKey }) =>
 
       <div className="flex-shrink-0">
         <button
-          onClick={() => handleGenerateVideo(baseImage, prompt, apiKey, selectedModel, setIsGeneratingVideo, setVideo)}
+          onClick={() => {
+            savePromptToFile(sessionDirectory, sessionId, prompt, 'video');
+            handleGenerateVideo(baseImage, prompt, apiKey, selectedModel, setIsGeneratingVideo, setVideo)
+          }}
           disabled={(!baseImage && !prompt.trim()) || isGeneratingVideo}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
