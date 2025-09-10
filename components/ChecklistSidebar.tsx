@@ -5,41 +5,26 @@ interface ChecklistSidebarProps {
   isOpen: boolean;
 }
 
+// Use import.meta.glob to import all markdown files from the checklists directory.
+// The `eager: true` option makes sure the content is imported synchronously.
+// The `as: 'raw'` option imports the files as raw text.
+const checklistModules = import.meta.glob('../assets/checklists/*.md', { eager: true, as: 'raw' });
+
+// Extract the file names to be used as checklist identifiers.
+const availableChecklists = Object.keys(checklistModules).map(path => {
+  const parts = path.split('/');
+  return parts[parts.length - 1];
+});
+
 const ChecklistSidebar: React.FC<ChecklistSidebarProps> = ({ isOpen }) => {
-  const [checklists, setChecklists] = useState<string[]>([]);
-  const [selectedChecklist, setSelectedChecklist] = useState<string>('');
+  const [selectedChecklist, setSelectedChecklist] = useState<string>(availableChecklists[0] || '');
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
 
   useEffect(() => {
-    // In a real app, you would fetch this from a server or a file system.
-    setChecklists(['text_to_image.md']);
-    setSelectedChecklist('text_to_image.md');
-  }, []);
-
-  useEffect(() => {
     if (selectedChecklist) {
-      // In a real app, you would fetch this content. For this demo, it's hardcoded.
-      const markdownContent = `
-# Creation of an image from a text
-This is a short checklist of tasks to complete for creating an image from a text description:
-
-## 1. Brainstorming and Conceptualization
-Description: Start by generating a clear idea or concept for your image. Think about the subject, the setting, the mood, and any specific details you want to include.
-You can use Gemini 2.5 Flash or Pro to help you in this journey. You can ground this
-brainstorming and conceptualization with marketing documents for example, that you share
-with Gemini for a more aligned output.
-
-## 2. Text Prompt Creation
-Description: Write a detailed text description of the image you want to create. Be as specific as possible, using descriptive adjectives and phrases to convey your vision.
-You can start with a simple prompt, and use the image attributes toolbar to enrich your
-description with specific angle of view, lense type, and paper grain effect.
-
-## 3. Image Generation
-Description: Use Imagen3 to turn your text prompt into an image.
-
-## 4. Review and Refinement
-Description: Once the image is generated, review it to see if it matches your expectations. If not, refine your text prompt and generate new versions until you're happy with the result.
-      `;
+      // Construct the key to access the content from the imported modules.
+      const modulePath = `../assets/checklists/${selectedChecklist}`;
+      const markdownContent = checklistModules[modulePath];
 
       const parseMarkdown = (content: string) => {
         const items: ChecklistItem[] = [];
@@ -66,7 +51,14 @@ Description: Once the image is generated, review it to see if it matches your ex
         return items;
       };
 
-      setChecklistItems(parseMarkdown(markdownContent));
+      if (markdownContent) {
+        setChecklistItems(parseMarkdown(markdownContent));
+      } else {
+        // Handle case where content is not found, though with glob it should be.
+        setChecklistItems([]);
+      }
+    } else {
+      setChecklistItems([]);
     }
   }, [selectedChecklist]);
 
@@ -93,7 +85,7 @@ Description: Once the image is generated, review it to see if it matches your ex
           onChange={(e) => setSelectedChecklist(e.target.value)}
           className="w-full bg-gray-700 border border-gray-600 text-white rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {checklists.map((checklist) => (
+          {availableChecklists.map((checklist) => (
             <option key={checklist} value={checklist}>
               {checklist.replace('.md', '').replace(/_/g, ' ')}
             </option>
