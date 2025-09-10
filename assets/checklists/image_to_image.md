@@ -5,7 +5,7 @@ This is a short checklist of tasks to complete for creating an image from an exi
 Description: Select the source image and identify its core subjects, composition, and overall mood.
 
 ## 2. AI Analysis of the image
-Description: Use a multimodal LLM to generate a rich, detailed text description of the source image, 
+Description: Use Gemini 2.5 Flash to generate a rich, detailed text description of the source image, 
 capturing everything from textures and lighting to artistic style. In this application, this step
 is done automatically when an image is uploaded in the image creation/annotation panel.
 
@@ -14,7 +14,7 @@ Description: Review the AI-generated description. Modify, add, or remove element
 your desired creative vision.
 
 ## 4. Image Generation
-Description: Input the final, refined text prompt into a text-to-image model to synthesize a new image.
+Description: Input the final, refined text prompt into Imagen3 to synthesize a new image.
 
 ## 5. Selection & Iteration
 Description: Generate multiple variations. Select the best result or adjust the prompt and repeat the 
