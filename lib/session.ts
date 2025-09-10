@@ -45,3 +45,23 @@ export const saveImageUploadToFile = async (
     console.error('Failed to save image upload info to file:', error);
   }
 };
+
+export const createNewSessionFile = async (
+  sessionDirectory: FileSystemDirectoryHandle | null,
+  sessionId: string
+) => {
+  if (!sessionDirectory || !sessionId) {
+    return;
+  }
+
+  try {
+    const fileName = `session-${sessionId}.txt`;
+    const fileHandle = await sessionDirectory.getFileHandle(fileName, { create: true });
+    const writable = await fileHandle.createWritable({ keepExistingData: false });
+    const timestamp = new Date().toISOString();
+    await writable.write(`[${timestamp}] [session-start]\nNew session created.\n\n`);
+    await writable.close();
+  } catch (error) {
+    console.error('Failed to create new session file:', error);
+  }
+};
