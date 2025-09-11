@@ -23,3 +23,6 @@ generation step to explore different outcomes.
 ## 6. Post-Processing
 Description: Make final adjustments to the chosen image, such as cropping, color correction, 
 or minor inpainting, to achieve a polished result.
+
+## 7. Finalize & Export
+Description: Download the final image on your local computer.
