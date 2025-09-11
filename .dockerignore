@@ -17,4 +17,3 @@ yarn-error.log*
 
 # Ignore Docker related files
 Dockerfile
-nginx.conf
