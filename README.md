@@ -47,3 +47,6 @@ To build and run the project, use the following commands:
 - **Component-based architecture:** The UI is built with React components, which are located in the `components` directory.
 - **Utility functions:** Helper functions for API calls, image manipulation, and other utilities are located in the `lib` directory.
 - **Typing:** The project uses TypeScript for static typing. Type definitions are in the `types.ts` file.
+
+## Disclaimer
+This is not an officially supported Google product.
