@@ -17,3 +17,6 @@ Description: Use Imagen3 to turn your text prompt into an image.
 
 ## 4. Review and Refinement
 Description: Once the image is generated, review it to see if it matches your expectations. If not, refine your text prompt and generate new versions until you're happy with the result.
+
+## 5. Finalize & Export
+Description: Download the final image on your local computer.
