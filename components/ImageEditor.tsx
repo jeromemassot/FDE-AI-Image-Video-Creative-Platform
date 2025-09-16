@@ -67,6 +67,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey, ses
   const [selectedAngle, setSelectedAngle] = useState('');
   const [selectedLens, setSelectedLens] = useState('');
   const [selectedPaperGrain, setSelectedPaperGrain] = useState('');
+  const [selectedModel, setSelectedModel] = useState('imagen-3.0-generate-002');
 
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -131,6 +132,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey, ses
       await handleGenerateImage(
         apiKey, 
         finalPrompt, 
+        selectedModel,
         setIsGeneratingImage, 
         setGenerationError, 
         setImage, 
@@ -263,6 +265,16 @@ const ImageEditor: React.FC<ImageEditorProps> = ({onPrepareForVideo, apiKey, ses
               {grain.title}
             </option>
           ))}
+        </select>
+        <label htmlFor="image-model" className="text-sm font-medium text-white">Image Model:</label>
+        <select
+          id="image-model"
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+          className="bg-gray-700 border border-gray-600 text-white rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="imagen-3.0-generate-002">Imagen 3</option>
+          <option value="gemini-2.5-flash-image-preview">Gemini 2.5 Flash</option>
         </select>
       </div>
       <div className="flex flex-col flex-grow min-h-0 space-y-6">
