@@ -28,7 +28,7 @@ Description: You position the camera directly to the side of your subject, captu
 8. Over-the-Shoulder
 Description: The photo is taken from behind a person, looking over their shoulder at the main subject. This draws the viewer into the scene, making them feel like they are part of a conversation or a participant in the action.
 
-9. Tilted Horizon (or Dutch Angle)
+9. Tilted Horizon
 Description: The camera is physically tilted to one side, so the horizon line in the picture is slanted. This creates a sense of unease, motion, or excitement. It’s often used to make a scene feel more dynamic or confusing.
 
 10. Frame Within a Frame
