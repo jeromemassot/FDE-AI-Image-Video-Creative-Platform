@@ -31,6 +31,7 @@ export const fetchApiKey = async (setApiKey: (key: string) => void) => {
 export const handleGenerateImage = async (
   apiKey: string,
   generationPrompt: string,
+  model: string,
   setIsGeneratingImage: (isGenerating: boolean) => void,
   setGenerationError: (error: string | null) => void,
   setImage: (image: string | null) => void,
@@ -46,22 +47,45 @@ export const handleGenerateImage = async (
           apiKey: apiKey
       });
 
-      console.log(`apiKey: ${apiKey}`)
+      console.log(`apiKey: ${apiKey}`);
+      console.log(`Using model for image generation: ${model}`);
 
-      const response = await ai.models.generateImages({
-          model: 'imagen-3.0-generate-002',
-          prompt: generationPrompt,
-          config: {
-              numberOfImages: 1,
-              outputMimeType: 'image/jpeg',
-              aspectRatio: '1:1',
-          },
-      });
+      if (model.startsWith('imagen')) {
+          const response = await ai.models.generateImages({
+              model: model,
+              prompt: generationPrompt,
+              config: {
+                  numberOfImages: 1,
+                  outputMimeType: 'image/jpeg',
+                  aspectRatio: '1:1',
+              },
+          });
+          const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
+          const imageUrl = `data:image/jpeg;base64,${base64ImageBytes}`;
+          setImage(imageUrl);
+      } else if (model.startsWith('gemini')) {
+          const response = await ai.models.generateContent({
+            model: model,
+            contents: generationPrompt
+          });
+          
+          let imageUrl: string | undefined;
+          for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData) {
+              imageUrl = `data:image/jpeg;base64,${part.inlineData.data}`;
+              break;
+            }
+          }
 
-      const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
-      const imageUrl = `data:image/jpeg;base64,${base64ImageBytes}`;
+          if (imageUrl) {
+            setImage(imageUrl);
+          } else {
+            throw new Error("No image data returned from Gemini model.");
+          }
+      } else {
+        throw new Error(`Unsupported model for image generation: ${model}`);
+      }
       
-      setImage(imageUrl);
       setAnnotations([]);
       setTextInput(null);
       setSelectedAnnotationId(null);
@@ -218,7 +242,7 @@ export const describeImage = async (
 ): Promise<string> => {
   if (!image) {
     setDescriptionError("No image provided to describe.");
-    return;
+    return "";
   }
 
   setIsDescribingImage(true);
