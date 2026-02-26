@@ -20,6 +20,24 @@
  * the code snippet
  */
 
+
+async function verifyPermission(fileHandle: FileSystemDirectoryHandle, readWrite: boolean) {
+  const options: any = {};
+  if (readWrite) {
+    options.mode = 'readwrite';
+  }
+  // Check if permission was already granted. If so, return true.
+  if ((await (fileHandle as any).queryPermission(options)) === 'granted') {
+    return true;
+  }
+  // Request permission. If the user grants permission, return true.
+  if ((await (fileHandle as any).requestPermission(options)) === 'granted') {
+    return true;
+  }
+  // The user didn't grant permission, so return false.
+  return false;
+}
+
 export const savePromptToFile = async (
   sessionDirectory: FileSystemDirectoryHandle | null,
   sessionId: string,
@@ -31,6 +49,12 @@ export const savePromptToFile = async (
   }
 
   try {
+    const hasPermission = await verifyPermission(sessionDirectory, true);
+    if (!hasPermission) {
+      console.error('Permission to session directory was denied.');
+      return;
+    }
+
     const fileName = `session-${sessionId}.txt`;
     const fileHandle = await sessionDirectory.getFileHandle(fileName, { create: true });
     const file = await fileHandle.getFile();
@@ -55,6 +79,12 @@ export const saveImageUploadToFile = async (
   }
 
   try {
+    const hasPermission = await verifyPermission(sessionDirectory, true);
+    if (!hasPermission) {
+      console.error('Permission to session directory was denied.');
+      return;
+    }
+
     const sessionFileName = `session-${sessionId}.txt`;
     const fileHandle = await sessionDirectory.getFileHandle(sessionFileName, { create: true });
     const file = await fileHandle.getFile();
@@ -77,6 +107,12 @@ export const createNewSessionFile = async (
   }
 
   try {
+    const hasPermission = await verifyPermission(sessionDirectory, true);
+    if (!hasPermission) {
+      console.error('Permission to session directory was denied.');
+      return;
+    }
+
     const fileName = `session-${sessionId}.txt`;
     const fileHandle = await sessionDirectory.getFileHandle(fileName, { create: true });
     const writable = await fileHandle.createWritable({ keepExistingData: false });
