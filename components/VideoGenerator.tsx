@@ -40,8 +40,8 @@ const VideoGenerator: React.FC<VideoGeneratorProps> = ({ baseImage, apiKey, sess
   const [selectedModel, setSelectedModel] = useState('Veo 3.1 Fast');
 
   const modelMapping = {
-    'Veo 3.1': "veo-3.1-generate-001",
-    'Veo 3.1 Fast': "veo-3.1-fast-generate-001"
+    'Veo 3.1': "veo-3.1-generate-preview",
+    'Veo 3.1 Fast': "veo-3.1-fast-generate-preview"
   };
 
   return (
