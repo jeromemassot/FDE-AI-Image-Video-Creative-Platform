@@ -114,10 +114,8 @@ export const handleGenerateVideo = async (
     setIsGeneratingVideo(true);
     
     const modelMapping = {
-      'Veo 3.0': "veo-3.0-generate-001",
-      'Veo 3.0 Preview': "veo-3.0-generate-preview",
-      'Veo 3.0 Fast': "veo-3.0-fast-generate-001",
-      'Veo 3.0 Fast Preview': "veo-3.0-fast-generate-preview"
+      'Veo 3.1': "veo-3.1-generate-preview",
+      'Veo 3.1 Fast': "veo-3.1-fast-generate-preview"
     };
 
     const modelToUse = modelMapping[selectedModel as keyof typeof modelMapping];
@@ -150,7 +148,11 @@ export const handleGenerateVideo = async (
     } else {
       fullPrompt = prompt.trim();
     }
-      
+
+  console.log(`fullPrompt: ${fullPrompt}`);
+  console.log(`imagePart: ${JSON.stringify(imagePart)}`);
+  console.log(`modelToUse: ${modelToUse}`);
+
     operation = await ai.models.generateVideos({
       model: modelToUse,
       prompt: fullPrompt,
