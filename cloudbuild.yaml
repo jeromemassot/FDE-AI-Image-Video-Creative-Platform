@@ -1,20 +1,33 @@
 substitutions:
   _SERVICE_NAME: ai-video-scene-creator
+  _REGION: us-central1
 
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/petroglyphs-nlp/genai/${_SERVICE_NAME}:latest', '.']
+  args: [ 'build', '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/genai/${_SERVICE_NAME}:latest', '.']
 
-# Push the container image to Container Registry
+# Push the container image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/petroglyphs-nlp/genai/${_SERVICE_NAME}:latest']
+  args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/genai/${_SERVICE_NAME}:latest']
+
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - '${_SERVICE_NAME}'
+  - '--image'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/genai/${_SERVICE_NAME}:latest'
+  - '--region'
+  - '${_REGION}'
+  - '--platform'
+  - 'managed'
+  - '--allow-unauthenticated'
 
 options:
   logging: CLOUD_LOGGING_ONLY
 
-# Store image in the Google Artifact Registry
 images:
-- us-central1-docker.pkg.dev/petroglyphs-nlp/genai/${_SERVICE_NAME}
-
-#serviceAccount:
+- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/genai/${_SERVICE_NAME}
