@@ -5,9 +5,9 @@
 This project is a web-based AI Video Scene Creator that allows users to generate images and videos using Google's Generative AI models. The application is built with React, TypeScript, and Vite. It features an image editor for annotating images and a video generator that uses the annotated images to create video scenes.
 
 The core functionalities are:
-- **Image Generation:** Users can generate an image from a text prompt using the `imagen-3.0-generate-002` model.
+- **Image Generation:** Users can generate an image from a text prompt using the `imagen-4.0-generate-001` model.
 - **Image Annotation:** Users can annotate the generated or uploaded images with various tools like pencil, shapes, and text.
-- **Video Generation:** The annotated image can be used as a base to generate a video with different `veo-3.0` models.
+- **Video Generation:** The annotated image can be used as a base to generate a video with different `veo-3.1` models.
 
 The application is structured with a main `App.tsx` component that orchestrates the `ImageEditor` and `VideoGenerator` components. The API calls to the Google Generative AI are handled in `lib/api.ts`.
 
