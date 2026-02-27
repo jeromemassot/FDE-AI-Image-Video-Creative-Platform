@@ -1,59 +1,11 @@
-# Technical Report: AI Video Scene Creator - Engineering Overview
+# AI Image and Video Scene Creator
 
 ## Executive Summary
 The **AI Video Scene Creator** is a high-performance, web-based platform designed to bridge the gap between advanced generative AI models and non-technical marketing practitioners. Built with React and TypeScript, the application orchestrates a sophisticated pipeline involving image generation, semantic annotation, and video synthesis. 
 
 This report details the technical competencies demonstrated in its implementation, focusing on AI orchestration, security patterns, and operational efficiency.
 
-## System Architecture
-
-```mermaid
-graph TD
-    subgraph Client ["Browser / Client-Side (React/Vite)"]
-        UI["Web Interface (App.tsx)"]
-        IE["Image Editor Component"]
-        VG["Video Generator Component"]
-        IDB[(IndexedDB: Settings/API Keys)]
-        LFS[[Local File System: Session Data]]
-        API_LIB["API Orchestration (lib/api.ts)"]
-    end
-
-    subgraph GCP_Cloud ["Google Cloud Platform"]
-        subgraph Services ["Runtime Services"]
-            CR["Cloud Run (Static Hosting/Nginx)"]
-            AR["Artifact Registry (Docker Image)"]
-        end
-        subgraph AI_Models ["Generative AI Models (Public API)"]
-            IM4["Imagen 4.0 (Image Gen)"]
-            G25["Gemini 2.5 (Prompt/Describe)"]
-            V31["Veo 3.1 (Video Synthesis)"]
-        end
-    end
-
-    subgraph CI_CD ["CI/CD Pipeline"]
-        GH["GitHub Repository"]
-        GA["GitHub Actions"]
-        CB["Cloud Build"]
-    end
-
-    UI --> IE
-    UI --> VG
-    IE -- "Prepared Image" --> VG
-    IE --> API_LIB
-    VG --> API_LIB
-    API_LIB --> IM4
-    API_LIB --> G25
-    API_LIB --> V31
-    UI <--> IDB
-    API_LIB -.-> LFS
-
-    GH -- "Push main" --> GA
-    GA -- "Trigger" --> CB
-    CB -- "Push Image" --> AR
-    AR -- "Deploy" --> CR
-```
-
----
+![AI Image and Video Scene Creator](resources/ai-image-video.jpg)
 
 
 ## 1. AI/ML Engineering
@@ -123,6 +75,54 @@ The architecture prioritizes **Extensibility** and **Configuration Management**.
 - **Externalized Knowledge Base**: Creative checklists and industry-specific guides are stored as Markdown, allowing content updates without code changes.
 
 - **Model Agnostic Mapping**: Model identifiers are externalized in a mapping object within the components (e.g., [`VideoGenerator.tsx`]), enabling quick migration to newer model versions (e.g., moving from `v1beta` to `v1`).
+
+## 7. System Architecture
+
+```mermaid
+graph TD
+    subgraph Client ["Browser / Client-Side (React/Vite)"]
+        UI["Web Interface (App.tsx)"]
+        IE["Image Editor Component"]
+        VG["Video Generator Component"]
+        IDB[(IndexedDB: Settings/API Keys)]
+        LFS[[Local File System: Session Data]]
+        API_LIB["API Orchestration (lib/api.ts)"]
+    end
+
+    subgraph GCP_Cloud ["Google Cloud Platform"]
+        subgraph Services ["Runtime Services"]
+            CR["Cloud Run (Static Hosting/Nginx)"]
+            AR["Artifact Registry (Docker Image)"]
+        end
+        subgraph AI_Models ["Generative AI Models (Public API)"]
+            IM4["Imagen 4.0 (Image Gen)"]
+            G25["Gemini 2.5 (Prompt/Describe)"]
+            V31["Veo 3.1 (Video Synthesis)"]
+        end
+    end
+
+    subgraph CI_CD ["CI/CD Pipeline"]
+        GH["GitHub Repository"]
+        GA["GitHub Actions"]
+        CB["Cloud Build"]
+    end
+
+    UI --> IE
+    UI --> VG
+    IE -- "Prepared Image" --> VG
+    IE --> API_LIB
+    VG --> API_LIB
+    API_LIB --> IM4
+    API_LIB --> G25
+    API_LIB --> V31
+    UI <--> IDB
+    API_LIB -.-> LFS
+
+    GH -- "Push main" --> GA
+    GA -- "Trigger" --> CB
+    CB -- "Push Image" --> AR
+    AR -- "Deploy" --> CR
+```
 
 ## Conclusion
 
