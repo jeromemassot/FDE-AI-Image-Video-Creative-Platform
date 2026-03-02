@@ -1,5 +1,7 @@
 # AI Image and Video Scene Creator
 
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?style=flat-square&logo=googlecloud&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
+
 ## Executive Summary
 The **AI Video Scene Creator** is a high-performance, web-based platform designed to bridge the gap between advanced generative AI models and non-technical marketing practitioners. Built with React and TypeScript, the application orchestrates a sophisticated pipeline involving image generation, semantic annotation, and video synthesis. 
 
@@ -129,3 +131,55 @@ graph TD
 The **AI Video Scene Creator** represents a successful implementation of a cloud-native, AI-orchestrated platform. By prioritizing modularity and local-first data principles, the solution offers a secure and scalable environment for creative professionals. The integration of high-performance models like **Imagen 4.0** and **Veo 3.1** ensures that the platform remains at the cutting edge of generative AI, while the automated CI/CD pipeline guarantees operational excellence and rapid delivery of new features. 
 
 This technical foundation positions the application as a robust baseline for future enhancements in domain-specific AI workflows.
+## Repository Organization
+
+```text
+.
+├── App.tsx
+├── assets
+│   ├── checklists
+│   ├── knowledge
+│   └── logos
+├── CI_CD_SETUP.md
+├── cloudbuild.yaml
+├── components
+│   ├── ChecklistSidebar.tsx
+│   ├── icons
+│   ├── ImageEditor.tsx
+│   ├── ResizablePanels.tsx
+│   ├── SettingsModal.tsx
+│   ├── Toolbox.tsx
+│   └── VideoGenerator.tsx
+├── Dockerfile
+├── drivers
+│   └── instructions.txt
+├── icon.avif
+├── images.d.ts
+├── index.html
+├── index.tsx
+├── lib
+│   ├── api.ts
+│   ├── canvasUtils.ts
+│   ├── definitions.ts
+│   ├── imageEditorUtils.ts
+│   ├── imageUtils.ts
+│   ├── session.ts
+│   ├── settings.ts
+│   └── videoUtils.tsx
+├── LICENSE
+├── metadata.json
+├── nginx.conf
+├── package.json
+├── package-lock.json
+├── README.md
+├── resources
+│   ├── ai-image-video.jpg
+│   ├── Simple Platform,  Stunning Content.pdf
+│   └── technical_report.md
+├── tsconfig.json
+└── types.ts
+```
+
+## Author
+
+Jerome Massot ([jeromemassot@google.com](https://jeromemassot@.google.com/))
