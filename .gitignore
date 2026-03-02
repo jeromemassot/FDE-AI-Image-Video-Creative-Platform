@@ -25,3 +25,6 @@ dist-ssr
 
 # Gemini CLi
 .gemini/
+.agents/
+
+fde assessment/
