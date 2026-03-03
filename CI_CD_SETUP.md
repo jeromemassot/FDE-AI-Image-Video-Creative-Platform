@@ -32,7 +32,7 @@ In your GitHub repository, navigate to **Settings > Secrets and variables > Acti
 
 ## 3. GitHub Actions Workflow (`.github/workflows/deploy.yaml`)
 
-Pushing any changes to the `main` branch (specifically modifying the `app/` folder) automatically triggers an end-to-end pipeline:
+Pushing any changes to the `cicd` branch (specifically modifying the `app/` folder) automatically triggers an end-to-end pipeline:
 
 1. **Google Auth (Workload Identity Federation)**: Exchanges the short-lived GitHub OIDC token for a GCP access token using the provider name stored in `WIP_PROVIDER_NAME`. It provisions the `github-actions-deployer` service account identity.
 
