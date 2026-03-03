@@ -28,3 +28,7 @@ app/*.sw?
 .agents/
 
 fde assessment/
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
