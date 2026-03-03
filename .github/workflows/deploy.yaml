@@ -3,7 +3,7 @@ name: Deploy to Cloud Run
 on:
   push:
     branches:
-      - cicd
+      - main
     paths:
       - 'app/**'
       - '.github/workflows/deploy.yaml'

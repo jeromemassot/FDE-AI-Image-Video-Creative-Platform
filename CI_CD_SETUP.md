@@ -32,7 +32,7 @@ In your GitHub repository, navigate to **Settings > Secrets and variables > Acti
 
 ## 3. GitHub Actions Workflow (`.github/workflows/deploy.yaml`)
 
-Pusing any changes to the `cicd` branch (specifically modifying the `app/` folder) automatically triggers an end-to-end pipeline. The authentication flow uses Workload Identity Federation as illustrated below:
+Pusing any changes to the `main` branch (specifically modifying the `app/` folder) automatically triggers an end-to-end pipeline. The authentication flow uses Workload Identity Federation as illustrated below:
 
 ```mermaid
 sequenceDiagram
