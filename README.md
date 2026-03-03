@@ -1,6 +1,6 @@
 # AI Image and Video Scene Creator
 
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?style=flat-square&logo=googlecloud&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) ![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?style=flat-square&logo=googlecloud&logoColor=white) ![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat-square&logo=terraform&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
 
 ## Executive Summary
 The **AI Video Scene Creator** is a high-performance, web-based platform designed to bridge the gap between advanced generative AI models and non-technical marketing practitioners. Built with React and TypeScript, the application orchestrates a sophisticated pipeline involving image generation, semantic annotation, and video synthesis. 
@@ -59,16 +59,20 @@ Optimization is achieved through strategic model selection and resource-efficien
 
 ## 5. Operational Excellence
 
-The project follows modern **CI/CD** and **Cloud Native** deployment principles.
+The project follows modern **CI/CD** and **Cloud Native** deployment principles with a strong emphasis on security and automated provisioning.
 
-- **Automated Pipeline**: A dual-stage CI/CD pipeline is implemented using **GitHub Actions** and **Google Cloud Build**:
-    1.  **GitHub Actions**: Triggers on push to `main`, handling authentication via Service Account keys.
-    2.  **Cloud Build**: Executes the container build and pushes the image to **Artifact Registry**.
-    3.  **Cloud Run**: Automates the deployment of the containerized application.
+- **Infrastructure as Code (IaC)**: The entire GCP infrastructure required for the CI/CD pipeline—including Artifact Registry, Service Accounts, and IAM bindings—is defined and provisioned using **Terraform** (located in the [`deployment/`](deployment) directory), ensuring reproducible environments and environment parity.
 
-- **Reproducible Environments**: The `Dockerfile` utilizes a multi-stage build (Node.js for compilation, Alpin-based Nginx for production) to ensure minimal image size and maximum portability.
+- **Keyless Authentication**: The CI/CD pipeline implements **Workload Identity Federation** (OIDC), eliminating the need for long-lived, sensitive service account keys to be exported or stored within GitHub Secrets. 
 
-- **Evidence**: Pipeline configurations in [`.github/workflows/deploy.yaml`]and [`cloudbuild.yaml`].
+- **Automated Pipeline**: A streamlined CI/CD pipeline is implemented using **GitHub Actions**:
+    1.  **Authentication**: Exchanges short-lived GitHub OIDC tokens for a federated GCP Access Token, strictly scoping access to the `github-actions-deployer` service account.
+    2.  **Container Build**: Executes the multi-stage Docker build locally on the GitHub runner.
+    3.  **Deployment**: Pushes the image to **Artifact Registry** and automatically deploys the updated container to **Cloud Run**.
+
+- **Reproducible Environments**: The `Dockerfile` utilizes a multi-stage build (Node.js for compilation, Alpine-based Nginx for production) to ensure minimal image size, zero-downtime serving, and maximum portability.
+
+- **Evidence**: Pipeline configurations in [`.github/workflows/deploy.yaml`](.github/workflows/deploy.yaml) and Terraform code in [`deployment/main.tf`](deployment/main.tf).
 
 ## 6. Designing for Change
 
@@ -131,53 +135,40 @@ graph TD
 The **AI Video Scene Creator** represents a successful implementation of a cloud-native, AI-orchestrated platform. By prioritizing modularity and local-first data principles, the solution offers a secure and scalable environment for creative professionals. The integration of high-performance models like **Imagen 4.0** and **Veo 3.1** ensures that the platform remains at the cutting edge of generative AI, while the automated CI/CD pipeline guarantees operational excellence and rapid delivery of new features. 
 
 This technical foundation positions the application as a robust baseline for future enhancements in domain-specific AI workflows.
+
 ## Repository Organization
 
 ```text
 .
-├── App.tsx
-├── assets
-│   ├── checklists
-│   ├── knowledge
-│   └── logos
-├── CI_CD_SETUP.md
-├── cloudbuild.yaml
-├── components
-│   ├── ChecklistSidebar.tsx
-│   ├── icons
-│   ├── ImageEditor.tsx
-│   ├── ResizablePanels.tsx
-│   ├── SettingsModal.tsx
-│   ├── Toolbox.tsx
-│   └── VideoGenerator.tsx
-├── Dockerfile
+├── .github
+│   └── workflows
+│       └── deploy.yaml
+├── app
+│   ├── assets
+│   ├── components
+│   ├── lib
+│   ├── App.tsx
+│   ├── Dockerfile
+│   ├── index.html
+│   ├── index.tsx
+│   ├── nginx.conf
+│   ├── package.json
+│   └── tsconfig.json
+├── deployment
+│   ├── backend.tf
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── provider.tf
+│   ├── terraform.tfvars
+│   ├── variables.tf
+│   └── wip.tf
 ├── drivers
-│   └── instructions.txt
-├── icon.avif
-├── images.d.ts
-├── index.html
-├── index.tsx
-├── lib
-│   ├── api.ts
-│   ├── canvasUtils.ts
-│   ├── definitions.ts
-│   ├── imageEditorUtils.ts
-│   ├── imageUtils.ts
-│   ├── session.ts
-│   ├── settings.ts
-│   └── videoUtils.tsx
-├── LICENSE
-├── metadata.json
-├── nginx.conf
-├── package.json
-├── package-lock.json
-├── README.md
+│   └── instructions.txt
 ├── resources
-│   ├── ai-image-video.jpg
-│   ├── Simple Platform,  Stunning Content.pdf
-│   └── technical_report.md
-├── tsconfig.json
-└── types.ts
+│   ├── ai-image-video.jpg
+│   └── Simple Platform,  Stunning Content.pdf
+├── CI_CD_SETUP.md
+└── README.md
 ```
 
 ## Author

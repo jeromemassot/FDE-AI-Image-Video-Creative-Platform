@@ -32,7 +32,24 @@ In your GitHub repository, navigate to **Settings > Secrets and variables > Acti
 
 ## 3. GitHub Actions Workflow (`.github/workflows/deploy.yaml`)
 
-Pushing any changes to the `cicd` branch (specifically modifying the `app/` folder) automatically triggers an end-to-end pipeline:
+Pusing any changes to the `cicd` branch (specifically modifying the `app/` folder) automatically triggers an end-to-end pipeline. The authentication flow uses Workload Identity Federation as illustrated below:
+
+```mermaid
+sequenceDiagram
+    participant GH as GitHub Actions Runner
+    participant WIP as GCP Workload Identity Provider
+    participant SA as GCP Service Account (github-actions-deployer)
+    participant AR as Artifact Registry
+    participant CR as Cloud Run
+
+    GH->>WIP: 1. Presents GitHub OIDC Token
+    WIP->>WIP: Validates Token against Pool rules
+    WIP-->>GH: 2. Returns Federated Token
+    GH->>SA: 3. Exchanges for GCP Access Token (Impersonation)
+    SA-->>GH: 4. Returns short-lived GCP Access Token
+    GH->>AR: 5. Pushes Docker Image using Access Token
+    GH->>CR: 6. Deploys to Cloud Run using Access Token
+```
 
 1. **Google Auth (Workload Identity Federation)**: Exchanges the short-lived GitHub OIDC token for a GCP access token using the provider name stored in `WIP_PROVIDER_NAME`. It provisions the `github-actions-deployer` service account identity.
 
