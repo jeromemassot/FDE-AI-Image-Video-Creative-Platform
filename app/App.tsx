@@ -57,7 +57,7 @@ const App: React.FC = () => {
       <header className="flex-shrink-0 bg-gray-800 border-b border-gray-700 px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <img src={logo} alt="App Logo" className="h-7 w-21" />
-          <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator</h1>
+          <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator CI/CD</h1>
         </div>
         <div className="flex items-center gap-4">
           <button onClick={handleNewSession}
@@ -74,10 +74,10 @@ const App: React.FC = () => {
       </header>
       <main className="flex-grow min-h-0 flex">
         <div className={`flex-grow h-full transition-all duration-300 ${isChecklistOpen ? 'w-[calc(100%-24rem)]' : 'w-full'}`}>
-            <ResizablePanels
-              leftPanel={<ImageEditor key={sessionId} onPrepareForVideo={setAnnotatedImageForVideo} apiKey={apiKey} sessionDirectory={sessionDirectory} sessionId={sessionId} />}
-              rightPanel={<VideoGenerator key={sessionId} baseImage={annotatedImageForVideo} apiKey={apiKey} sessionDirectory={sessionDirectory} sessionId={sessionId} />}
-            />
+          <ResizablePanels
+            leftPanel={<ImageEditor key={sessionId} onPrepareForVideo={setAnnotatedImageForVideo} apiKey={apiKey} sessionDirectory={sessionDirectory} sessionId={sessionId} />}
+            rightPanel={<VideoGenerator key={sessionId} baseImage={annotatedImageForVideo} apiKey={apiKey} sessionDirectory={sessionDirectory} sessionId={sessionId} />}
+          />
         </div>
         <ChecklistSidebar isOpen={isChecklistOpen} />
       </main>
