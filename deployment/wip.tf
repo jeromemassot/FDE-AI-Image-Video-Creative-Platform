@@ -16,7 +16,7 @@ resource "google_iam_workload_identity_pool_provider" "github_actions" {
   attribute_condition                = <<EOT
     assertion.repository_owner == "jeromemassot" &&
     attribute.repository == "jeromemassot/FDE-AI-Image-Video-Creative-Platform" &&
-    assertion.ref == "refs/heads/cicd" &&
+    assertion.ref == "refs/heads/main" &&
     assertion.ref_type == "branch"
 EOT
   attribute_mapping = {
