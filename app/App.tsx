@@ -57,7 +57,7 @@ const App: React.FC = () => {
       <header className="flex-shrink-0 bg-gray-800 border-b border-gray-700 px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <img src={logo} alt="App Logo" className="h-7 w-21" />
-          <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator CI/CD Pipeline</h1>
+          <h1 className="text-xl font-bold tracking-tight">AI Video Scene Creator</h1>
         </div>
         <div className="flex items-center gap-4">
           <button onClick={handleNewSession}
