@@ -27,6 +27,27 @@ variable "artifact_repository_description" {
   type        = string
 }
 
+# Cloud Run Service Account Configuration
+variable "cloud_run_sa_account_id" {
+  description = "The account ID for the Cloud Run service account"
+  type        = string
+}
+
+variable "cloud_run_sa_display_name" {
+  description = "The display name for the Cloud Run service account"
+  type        = string
+}
+
+variable "cloud_run_sa_description" {
+  description = "The description for the Cloud Run service account"
+  type        = string
+}
+
+variable "cloud_run_sa_roles" {
+  description = "A set of IAM roles to assign to the Cloud Run service account"
+  type        = set(string)
+}
+
 # GitHub Actions Service Account Configuration
 variable "github_actions_sa_account_id" {
   description = "The account ID for the GitHub Actions service account"

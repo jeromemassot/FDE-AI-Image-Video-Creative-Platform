@@ -30,3 +30,19 @@ resource "google_project_iam_member" "github_actions_roles" {
   member  = "serviceAccount:${google_service_account.github_actions.email}"
 }
 
+# Service Account for Cloud Run
+resource "google_service_account" "cloud_run" {
+  account_id   = var.cloud_run_sa_account_id
+  display_name = var.cloud_run_sa_display_name
+  description  = var.cloud_run_sa_description
+}
+
+# Roles for Cloud Run SA
+resource "google_project_iam_member" "cloud_run_roles" {
+  for_each = var.cloud_run_sa_roles
+
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.cloud_run.email}"
+}
+

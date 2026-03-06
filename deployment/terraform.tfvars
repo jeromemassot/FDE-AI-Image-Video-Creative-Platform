@@ -8,12 +8,22 @@ gcp_service_list = [
   "iam.googleapis.com",
   "artifactregistry.googleapis.com",
   "run.googleapis.com",
-  "cloudbuild.googleapis.com"
+  "cloudbuild.googleapis.com",
+  "aiplatform.googleapis.com",
+  "iap.googleapis.com"
 ]
 
 # Artifact Registry Configuration
 artifact_repository_id          = "ai-video-creator"
 artifact_repository_description = "Docker repository for AI Video Scene Creator"
+
+# Cloud Run Service Account Configuration
+cloud_run_sa_account_id   = "cloud-run-sa"
+cloud_run_sa_display_name = "Cloud Run Service Account"
+cloud_run_sa_description  = "Used by Cloud Run to invoke the Cloud Run service"
+cloud_run_sa_roles = [
+  "roles/aiplatform.user"
+]
 
 # GitHub Actions Configuration
 github_actions_sa_account_id   = "github-actions-deployer"
