@@ -84,18 +84,24 @@ The architecture prioritizes **Extensibility** and **Configuration Management**.
 
 ## 7. System Architecture
 
+The application's deployment architecture ensures high availability and zero-trust security:
+
+- **Cloud Run Deployment**: The application is deployed as a fully managed **Cloud Run** service.
+- **Managed Ingress**: The service is accessible only from a **Regional External Load Balancer**, with its backend pointing to a **Serverless Network Endpoint Group (NEG)**.
+- **Secure Transport**: The frontend accepts only **HTTPS** connections, utilizing a dedicated SSL certificate linked to the `app.jeromemassot-ai.com` domain.
+- **Edge Authentication**: Access is secured by an **Identity-Aware Proxy (IAP)** using an OAuth 2.0 client, ensuring robust authentication before traffic reaches the application.
+
+
 ```mermaid
 graph TD
-    subgraph Client ["Browser / Client-Side (React/Vite)"]
-        UI["Web Interface (App.tsx)"]
-        IE["Image Editor Component"]
-        VG["Video Generator Component"]
-        IDB[(IndexedDB: Settings/API Keys)]
-        LFS[[Local File System: Session Data]]
-        API_LIB["API Orchestration (lib/api.ts)"]
-    end
-
+    User["End User"] -- "HTTPS (app.jeromemassot-ai.com)" --> XLB
+    
     subgraph GCP_Cloud ["Google Cloud Platform"]
+        subgraph Networking ["Network & Security"]
+            XLB["Regional External Load Balancer"]
+            IAP["Identity-Aware Proxy (OAuth 2.0)"]
+            NEG["Serverless NEG"]
+        end
         subgraph Services ["Runtime Services"]
             CR["Cloud Run (Static Hosting/Nginx)"]
             AR["Artifact Registry (Docker Image)"]
@@ -105,6 +111,21 @@ graph TD
             G25["Gemini 2.5 (Prompt/Describe)"]
             V31["Veo 3.1 (Video Synthesis)"]
         end
+    end
+
+    XLB -- "Authenticates via" --> IAP
+    IAP -- "Routes to" --> NEG
+    NEG -- "Backend" --> CR
+
+    CR -. "Serves Web App" .-> Client
+
+    subgraph Client ["Browser / Client-Side (React/Vite)"]
+        UI["Web Interface (App.tsx)"]
+        IE["Image Editor Component"]
+        VG["Video Generator Component"]
+        IDB[(IndexedDB: Settings/API Keys)]
+        LFS[[Local File System: Session Data]]
+        API_LIB["API Orchestration (lib/api.ts)"]
     end
 
     subgraph CI_CD ["CI/CD Pipeline"]
