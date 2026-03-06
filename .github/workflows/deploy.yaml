@@ -14,6 +14,7 @@ env:
   SERVICE_NAME: ai-video-scene-creator
   ARTIFACT_REPO: ai-video-creator
   SERVICE_ACCOUNT: github-actions-deployer@terraform-dev-487502.iam.gserviceaccount.com
+  CLOUD_RUN_SA_EMAIL: cloud-run-sa@terraform-dev-487502.iam.gserviceaccount.com
 
 jobs:
   deploy:
@@ -51,4 +52,5 @@ jobs:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          service_account: ${{ env.CLOUD_RUN_SA_EMAIL }}
           flags: '--allow-unauthenticated'
