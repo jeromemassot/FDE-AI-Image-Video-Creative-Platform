@@ -82,6 +82,24 @@ The architecture prioritizes **Extensibility** and **Configuration Management**.
 
 - **Model Agnostic Mapping**: Model identifiers are externalized in a mapping object within the components (e.g., [`VideoGenerator.tsx`]), enabling quick migration to newer model versions (e.g., moving from `v1beta` to `v1`).
 
+
+```mermaid
+sequenceDiagram
+    participant GH as GitHub Actions Runner
+    participant WIP as GCP Workload Identity Provider
+    participant SA as GCP Service Account (github-actions-deployer)
+    participant AR as Artifact Registry
+    participant CR as Cloud Run
+
+    GH->>WIP: 1. Presents GitHub OIDC Token
+    WIP->>WIP: Validates Token against Pool rules
+    WIP-->>GH: 2. Returns Federated Token
+    GH->>SA: 3. Exchanges for GCP Access Token (Impersonation)
+    SA-->>GH: 4. Returns short-lived GCP Access Token
+    GH->>AR: 5. Pushes Docker Image using Access Token
+    GH->>CR: 6. Deploys to Cloud Run using Access Token
+```
+
 ## 7. System Architecture
 
 The application's deployment architecture ensures high availability and zero-trust security:
